@@ -1,0 +1,12 @@
+# Dependencias e Builds
+**/node_modules/
+**/.next/
+**/dist/
+
+# Ignorar na raiz por precaucao
+node_modules/
+.next/
+dist/
+
+# Variaveis de ambiente
+**/.env*
