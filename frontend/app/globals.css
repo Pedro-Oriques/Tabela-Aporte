@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+:root {
+  --color-bg:             #0E0E0E;
+  --color-surface:        #1A1A1A;
+  --color-surface-2:      #222222;
+  --color-border:         #2E2E2E;
+  --color-text-primary:   #D0D0D0;
+  --color-text-secondary: #787878;
+  --color-accent:         #C9A84C;
+  --color-accent-2:       #E5C76B;
+  --color-green:          #5A9E72;
+  --color-blue:           #8499B1;
+  --color-amber:          #C9A84C;
+  --color-red:            #B85450;
+  --shadow-card:          none;
+  --shadow-card-hover:    none;
+  --radius-card:          2px;
+  --radius-btn:           2px;
+}
+
+/* ── Warm Obsidian theme (dashboard only) ── */
+html.warm-obsidian {
+  --color-bg:             #111009;
+  --color-surface:        #1F1D16;
+  --color-surface-2:      #252319;
+  --color-border:         #3A3020;
+  --color-text-primary:   #E8DFC8;
+  --color-text-secondary: #5C5648;
+  --color-accent:         #D4A84B;
+  --color-accent-2:       #E8C46A;
+  --color-green:          #9DCAAF;
+  --color-blue:           #8BAECC;
+  --color-amber:          #D4A84B;
+  --color-red:            #E08080;
+  --shadow-card:          none;
+  --shadow-card-hover:    none;
+  --radius-card:          7px;
+  --radius-btn:           6px;
+}
+
+/* ── Light theme — must come after warm-obsidian to win the cascade ── */
+html.light {
+  --color-bg:             #F2EFE5;
+  --color-surface:        #FDFBF4;
+  --color-surface-2:      #E9E6DB;
+  --color-border:         #D4CFBE;
+  --color-text-primary:   #1B1912;
+  --color-text-secondary: #6B6459;
+  --color-accent:         #8A5C08;
+  --color-accent-2:       #A87320;
+  --color-green:          #1B5E34;
+  --color-blue:           #264D72;
+  --color-amber:          #8A5C08;
+  --color-red:            #8A2222;
+  --shadow-card:          0 1px 4px rgba(0, 0, 0, 0.09);
+  --shadow-card-hover:    0 3px 10px rgba(0, 0, 0, 0.14);
+  --radius-card:          7px;
+  --radius-btn:           6px;
+}
+
+/* Tailwind v4 theme — maps CSS vars to utility classes */
+@theme inline {
+  --color-bg:        var(--color-bg);
+  --color-surface:   var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-border:    var(--color-border);
+  --color-primary:   var(--color-text-primary);
+  --color-secondary: var(--color-text-secondary);
+  --color-accent:    var(--color-accent);
+  --color-accent-2:  var(--color-accent-2);
+  --color-green:     var(--color-green);
+  --color-blue:      var(--color-blue);
+  --color-amber:     var(--color-amber);
+  --color-red:       var(--color-red);
+}
+
+/* ── Base ── */
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Flat card utilities ── */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+.card-hover {
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.card-hover:hover {
+  background: var(--color-surface-2);
+  border-color: var(--color-text-secondary);
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(90, 158, 114, 0.4); }
+  50%       { box-shadow: 0 0 12px 4px rgba(90, 158, 114, 0.2); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position:  1000px 0; }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 0%,
+    var(--color-surface-2) 50%,
+    var(--color-surface) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* ── Table row hover ── */
+.table-row-hover { transition: background 0.15s ease; }
+.table-row-hover:hover { background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface)) !important; }
+
+/* ── Nav link hover ── */
+.nav-link {
+  transition: color 150ms ease, background 150ms ease;
+  border-radius: var(--radius-btn);
+}
+.nav-link:not(.nav-link-active):hover {
+  color: var(--color-accent) !important;
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track  { background: var(--color-bg); }
+::-webkit-scrollbar-thumb  { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-secondary); }

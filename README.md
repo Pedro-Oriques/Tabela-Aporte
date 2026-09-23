@@ -20,12 +20,12 @@ O projeto é dividido em duas partes que precisam rodar simultaneamente: a API (
 PASSO 1: INICIANDO O BACKEND (API)
 
 Abra o primeiro terminal e entre na pasta do backend:
-cd valuation-api
+cd backend
 
 Instale as dependências:
 npm install
 
-Crie um arquivo chamado .env na raiz da pasta valuation-api e defina a porta:
+Crie um arquivo chamado .env na raiz da pasta backend e defina a porta:
 PORT=3000
 
 Inicie o servidor:
@@ -36,12 +36,12 @@ npm run start:dev
 PASSO 2: INICIANDO O FRONTEND (DASHBOARD)
 
 Abra um SEGUNDO terminal e entre na pasta do frontend:
-cd valuation-front
+cd frontend
 
 Instale as dependências:
 npm install
 
-Crie um arquivo chamado .env.local na raiz da pasta valuation-front e aponte para a API:
+Crie um arquivo chamado .env.local na raiz da pasta frontend e aponte para a API:
 PORT=3001
 NEXT_PUBLIC_API_URL=http://localhost:3000
 
