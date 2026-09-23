@@ -1,0 +1,19 @@
+# State do Terraform — contém IDs de recursos e pode conter valores sensíveis
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Variáveis com segredos reais — NÃO commitar
+terraform.tfvars
+*.auto.tfvars
+
+# Diretório de trabalho do Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Planos gerados localmente
+*.tfplan
+
+# Credenciais AWS (nunca devem entrar no repositório)
+*.pem
+credentials

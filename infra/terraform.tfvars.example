@@ -1,0 +1,28 @@
+# ---------------------------------------------------------------------------
+# terraform.tfvars.example
+# Copie este arquivo para terraform.tfvars e preencha com seus valores reais.
+# O arquivo terraform.tfvars está no .gitignore — NUNCA o commite.
+# ---------------------------------------------------------------------------
+
+project_name  = "invs"
+environment   = "production"
+aws_region    = "us-east-1"
+
+# Rede
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+
+# ECS
+backend_port          = 3000
+backend_cpu           = 256   # 0.25 vCPU
+backend_memory        = 512   # MB
+backend_desired_count = 1
+
+# CORS — coloque o domínio real do seu frontend no Vercel
+allowed_origins = "https://seu-app.vercel.app"
+
+# Segredos — preencha com os valores reais (não commite este arquivo!)
+database_url  = "mongodb+srv://usuario:senha@cluster.mongodb.net/invs?retryWrites=true&w=majority"
+brapi_token   = "seu-token-brapi-aqui"
+admin_api_key = "uma-chave-longa-e-aleatoria-aqui"

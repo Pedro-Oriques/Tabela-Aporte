@@ -1,0 +1,142 @@
+/* Neumorphism Base Styles */
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #E0E5EC;
+  color: #2D3748;
+  min-height: 100vh;
+}
+
+/* Neumorphic raised effect */
+.neu-raised {
+  background: #E0E5EC;
+  box-shadow: 6px 6px 12px #A3B1C6, -6px -6px 12px #FFFFFF;
+  border-radius: 16px;
+}
+
+/* Neumorphic inset/pressed effect */
+.neu-inset {
+  background: #E0E5EC;
+  box-shadow: inset 4px 4px 8px #A3B1C6, inset -4px -4px 8px #FFFFFF;
+  border-radius: 12px;
+}
+
+/* Hover states */
+.neu-raised-hover {
+  transition: all 0.2s ease;
+}
+
+.neu-raised-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 8px 8px 16px #A3B1C6, -8px -8px 16px #FFFFFF;
+}
+
+.neu-button-raised {
+  background: #E0E5EC;
+  box-shadow: 6px 6px 12px #A3B1C6, -6px -6px 12px #FFFFFF;
+  border-radius: 12px;
+  transition: all 0.15s ease;
+}
+
+.neu-button-raised:hover {
+  box-shadow: inset 4px 4px 8px #A3B1C6, inset -4px -4px 8px #FFFFFF;
+}
+
+.neu-button-raised:active {
+  box-shadow: inset 4px 4px 8px #A3B1C6, inset -4px -4px 8px #FFFFFF;
+}
+
+/* Accent gradient */
+.gradient-accent {
+  background: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero gradient background */
+.hero-gradient {
+  background: radial-gradient(circle at top, #C9D6FF 0%, #E2E2E2 100%);
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4),
+                6px 6px 12px #A3B1C6,
+                -6px -6px 12px #FFFFFF;
+  }
+  50% {
+    box-shadow: 0 0 12px 4px rgba(16, 185, 129, 0.2),
+                6px 6px 12px #A3B1C6,
+                -6px -6px 12px #FFFFFF;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #E0E5EC 0%,
+    #F0F3F7 50%,
+    #E0E5EC 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Table row hover effect */
+.table-row-hover {
+  transition: all 0.2s ease;
+}
+
+.table-row-hover:hover {
+  box-shadow: inset 2px 2px 4px #A3B1C6, inset -2px -2px 4px #FFFFFF;
+  background: #D8DEE9;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #E0E5EC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #A3B1C6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8895A8;
+}

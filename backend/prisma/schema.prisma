@@ -1,0 +1,26 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model StockCache {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ticker    String   @unique
+  data      String
+  updatedAt DateTime @updatedAt
+
+  @@map("stock_cache")
+}
+
+model PlanilhaCache {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ticker    String   @unique
+  data      String
+  updatedAt DateTime @updatedAt
+
+  @@map("planilha_cache")
+}
