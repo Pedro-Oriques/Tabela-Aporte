@@ -1,0 +1,132 @@
+name: Backend — Build & Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"           # só dispara quando há mudanças no backend
+      - ".github/workflows/backend-deploy.yml"
+
+  workflow_dispatch:           # permite trigger manual pelo painel do GitHub
+
+# Cancela runs anteriores da mesma branch para economizar minutos de Actions
+concurrency:
+  group: backend-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION:     us-east-1
+  ECR_REPOSITORY: invs-backend     # nome do repositório ECR (output do Terraform)
+  ECS_CLUSTER:    invs-cluster     # output: ecs_cluster_name
+  ECS_SERVICE:    invs-backend-service  # output: ecs_service_name
+  CONTAINER_NAME: backend          # nome do container na task definition
+
+jobs:
+  # -----------------------------------------------------------------------
+  # Job 1: Testes
+  # Roda os testes do NestJS antes de qualquer build ou deploy.
+  # -----------------------------------------------------------------------
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test -- --passWithNoTests
+
+  # -----------------------------------------------------------------------
+  # Job 2: Build e Deploy
+  # Só executa se os testes passarem.
+  # -----------------------------------------------------------------------
+  deploy:
+    name: Build Docker & Deploy ECS
+    runs-on: ubuntu-latest
+    needs: test                  # aguarda o job de testes
+
+    # Permissões necessárias para autenticação OIDC com a AWS
+    permissions:
+      id-token: write            # permite solicitar token OIDC ao GitHub
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Autenticação na AWS via OIDC — sem access keys permanentes no repositório
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Login no ECR para poder fazer docker push
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Define a tag da imagem com o SHA do commit para rastreabilidade
+      - name: Set image tag
+        id: image-tag
+        run: echo "tag=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      # Build multi-stage e push para o ECR
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.image-tag.outputs.tag }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+          # Cache de layers para builds mais rápidos
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Busca a task definition atual do ECS (formato JSON)
+      - name: Download current ECS task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.ECS_SERVICE }} \
+            --query taskDefinition \
+            > task-definition.json
+
+      # Atualiza apenas o campo "image" na task definition com a nova imagem
+      - name: Update image in task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.image-tag.outputs.tag }}
+
+      # Registra a nova task definition e faz rolling deploy no ECS Service.
+      # O circuit breaker configurado no Terraform faz rollback automático se falhar.
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true   # aguarda deploy completar antes de marcar o job como sucesso
+          wait-for-minutes: 10
+
+      - name: Print backend URL
+        run: echo "Backend disponível em http://${{ secrets.ALB_DNS_NAME }}"

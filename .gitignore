@@ -10,3 +10,13 @@ dist/
 
 # Variaveis de ambiente
 **/.env*
+!**/.env.example
+!**/.env.local.example
+
+# Terraform — state e variáveis com segredos
+infra/*.tfstate
+infra/*.tfstate.*
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/terraform.tfvars
+infra/*.tfplan
